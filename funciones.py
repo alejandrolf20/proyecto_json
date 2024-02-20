@@ -40,34 +40,51 @@ def contar_debilidad_por_tipo(tipo):
     except Exception as e:
         print(f"Error al contar las debilidades de los Pokémon al tipo '{tipo}': {str(e)}")
         return 0
-  
+ 
 def buscar_por_tipo(tipo):
     tipo = tipo.capitalize()
     pokemon_list = data["pokemon"]
     pokemon_tipo = [pokemon['Nombre'] for pokemon in pokemon_list if tipo in pokemon['type']]
-    return pokemon_tipo
+    total_pokemon_tipo = len(pokemon_tipo)
+    nombres_pokemon_tipo = ", ".join(pokemon_tipo)
+    return f"Total de Pokémon de tipo {tipo}: {total_pokemon_tipo}\nPokémon: {nombres_pokemon_tipo}"
+
 
 def buscar_info_relacionada(nombre_pokemon):
     pokemon_list = data["pokemon"]
     for pokemon in pokemon_list:
         if pokemon['Nombre'].lower() == nombre_pokemon.lower():
-            print(f"Nombre: {pokemon['Nombre']}")
-            print(f"Evolución Previa: {pokemon.get('prev_evolution', 'Ninguna')}")
-            print(f"Evolución Posterior: {pokemon.get('next_evolution', 'Ninguna')}")
-            return
-    print("El Pokémon no se encuentra en la Pokédex.")
+            evolucion_previa = pokemon.get('prev_evolution', 'Ninguna')
+            evolucion_posterior = pokemon.get('next_evolution', 'Ninguna')
+            
+            evolucion_previa_str = ", ".join([f"{evo['Número']} - {evo['Nombre']}" for evo in evolucion_previa]) if isinstance(evolucion_previa, list) else evolucion_previa
+            
+            evolucion_posterior_str = ", ".join([f"{evo['Número']} - {evo['Nombre']}" for evo in evolucion_posterior]) if isinstance(evolucion_posterior, list) else evolucion_posterior
+            
+            return f"Nombre: {pokemon['Nombre']}\nEvolución Previa: {evolucion_previa_str}\nEvolución Posterior: {evolucion_posterior_str}"
+    return "El Pokémon no se encuentra en la Pokédex."
 
-def informacion_pokemon(nombre_pokemon):
+def informacion_pokemon(data, nombre_pokemon):
     pokemon_list = data["pokemon"]
     for pokemon in pokemon_list:
         if pokemon['Nombre'].lower() == nombre_pokemon.lower():
-            print(f"Nombre: {pokemon['Nombre']}")
-            print(f"Número en la Pokédex: {pokemon['id']}")
-            print(f"Tipo: {pokemon['type']}")
-            print(f"Debilidades: {pokemon.get('weaknesses', 'Ninguna')}")
-            print(f"Altura: {pokemon.get('height', 'Desconocida')}")
-            print(f"Peso: {pokemon.get('weight', 'Desconocido')}")
-            print(f"Evolución Previa: {pokemon.get('prev_evolution', 'Ninguna')}")
-            print(f"Evolución Posterior: {pokemon.get('next_evolution', 'Ninguna')}")
-            return
-    print("El Pokémon no se encuentra en la Pokédex.")
+            nombre = pokemon['Nombre']
+            numero_pokedex = pokemon['id']
+            tipo_actual = [t.lower() for t in pokemon['type']]
+            tipo = ", ".join(pokemon['type'])
+            debilidades = ", ".join(pokemon.get('weaknesses', ['Ninguna']))
+            altura = pokemon.get('height', 'Desconocida')
+            peso = pokemon.get('weight', 'Desconocido')
+            pokemon_mismo_tipo = [p for p in pokemon_list if all(tipo in [t.lower() for t in p['type']] for tipo in tipo_actual) and p['Nombre'].lower() != nombre_pokemon.lower()]
+            total_tipo = len(pokemon_mismo_tipo)
+            nombres_tipo = ", ".join([p['Nombre'] for p in pokemon_mismo_tipo])
+            
+            evolucion_previa = pokemon.get('prev_evolution', 'Ninguna')
+            evolucion_posterior = pokemon.get('next_evolution', 'Ninguna')
+            if isinstance(evolucion_previa, list):
+                evolucion_previa = ", ".join([f"{evo['Número']} - {evo['Nombre']}" for evo in evolucion_previa])
+            if isinstance(evolucion_posterior, list):
+                evolucion_posterior = ", ".join([f"{evo['Número']} - {evo['Nombre']}" for evo in evolucion_posterior])
+            
+            return f"Nombre: {nombre}\nNúmero en la Pokédex: {numero_pokedex}\nTipo: {tipo}\nDebilidades: {debilidades}\nAltura: {altura}\nPeso: {peso}\nEvolución Previa: {evolucion_previa}\nEvolución Posterior: {evolucion_posterior}\nPokémon del mismo tipo ({tipo}): {total_tipo}\n{nombres_tipo}"
+    return "El Pokémon no se encuentra en la Pokédex."
