@@ -15,11 +15,13 @@ while opcion != 6:
         pokemon_tipo = buscar_por_tipo(tipo)
         print(f"\nPokémon del tipo {tipo.capitalize()}: {pokemon_tipo}")
     elif opcion == 4:
-        nombre_pokemon = input("\nIngrese el nombre del Pokémon que desea buscar: ")
-        buscar_info_relacionada(nombre_pokemon)
+        nombre_pokemon = input("Ingrese el nombre del Pokémon que desea buscar: ")
+        informacion_relacionada = buscar_info_relacionada(nombre_pokemon)
+        print(informacion_relacionada)
     elif opcion == 5:
-        nombre_pokemon = input("\nIngrese el nombre del Pokémon del que desea obtener información detallada: ")
-        informacion_pokemon(nombre_pokemon)
+        nombre_pokemon = input("Ingrese el nombre del Pokémon del que desea obtener información detallada: ")
+        informacion_detallada = informacion_pokemon(data, nombre_pokemon)
+        print(informacion_detallada)
     else:
         print("\nOpción inválida. Por favor, ingrese un número válido del menú.")
     
